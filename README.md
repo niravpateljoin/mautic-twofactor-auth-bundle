@@ -42,7 +42,7 @@ This plugin allows users to enable, configure, and verify 2FA during login, ensu
 
 ```bash
 cd /path/to/mautic/plugins
-git clone https://github.com/yourusername/MauticTwoFactorAuthBundle.git MauticTwoFactorAuthBundle
+git clone https://github.com/niravpateljoin/mautic-twofactor-auth-bundle.git MauticTwoFactorAuthBundle
 ```
 After installation, make sure to clear the cache and run any necessary migrations:
 
