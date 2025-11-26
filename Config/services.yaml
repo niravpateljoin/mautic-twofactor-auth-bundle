@@ -1,0 +1,50 @@
+parameters:
+  mautic.plugin.mautic_twofactor.challenge_enabled: true
+
+services:
+  mautic.plugin.mautic_twofactor.helper.twofactor:
+    class: MauticPlugin\MauticTwoFactorAuthBundle\Helper\TwoFactorHelper
+    arguments:
+      - '@doctrine.orm.entity_manager'
+
+  mautic.plugin.mautic_twofactor.subscriber.login:
+    class: MauticPlugin\MauticTwoFactorAuthBundle\EventSubscriber\TwoFactorLoginSubscriber
+    arguments:
+      - '@mautic.plugin.mautic_twofactor.helper.twofactor'
+      - '@router'
+      - '%mautic.plugin.mautic_twofactor.challenge_enabled%'
+    tags:
+      - kernel.event_subscriber
+
+  mautic.form.extension.user_twofactor:
+    class: MauticPlugin\MauticTwoFactorAuthBundle\Form\Extension\UserTypeExtension
+    arguments:
+      - '@mautic.plugin.mautic_twofactor.helper.twofactor'
+    tags:
+      - form.type_extension
+
+  mautic.plugin.mautic_twofactor.controller.setup:
+    class: MauticPlugin\MauticTwoFactorAuthBundle\Controller\TwoFactorSetupController
+    arguments:
+      - '@mautic.helper.user'
+      - '@mautic.plugin.mautic_twofactor.helper.twofactor'
+    tags:
+      - controller.service_arguments
+
+  mautic.plugin.mautic_twofactor.controller.verify:
+    class: MauticPlugin\MauticTwoFactorAuthBundle\Controller\TwoFactorVerifyController
+    arguments:
+      - '@mautic.helper.user'
+      - '@mautic.plugin.mautic_twofactor.helper.twofactor'
+      - '@translator'
+    tags:
+      - controller.service_arguments
+
+  # mautic.plugin.mautic_twofactor.controller.challenge:
+  #   class: MauticPlugin\MauticTwoFactorAuthBundle\Controller\ChallengeController
+  #   arguments:
+  #     - '@mautic.helper.user'
+  #     - '@mautic.plugin.mautic_twofactor.helper.twofactor'
+  #     - '@translator'
+  #   tags:
+  #     - controller.service_arguments

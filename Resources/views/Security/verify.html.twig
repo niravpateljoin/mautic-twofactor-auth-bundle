@@ -1,0 +1,107 @@
+{% extends '@MauticUser/Security/base.html.twig' %}
+
+{% block headerTitle %}{{ 'mautic.twofactor.verify.title'|trans }}{% endblock %}
+{% block pageTitle %}{{ 'mautic.twofactor.verify.title'|trans }}{% endblock %}
+{% block content %}
+    <style>
+        .twofactor-wrapper {
+            /* min-height: 100%; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* padding: 2rem 1rem; */
+        }
+
+        .twofactor-card {
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .twofactor-badge {
+            font-size: 0.7rem;
+        }
+
+        .totp-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #4b5aab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+    </style>
+
+    <div class="twofactor-wrapper">
+        <div class="card shadow-sm border-0 p-4 twofactor-card text-center">
+            {% if verifyError %}
+                <div class="alert alert-danger small mb-3 text-start">
+                    {{ verifyError|trans }}
+                </div>
+            {% endif %}
+
+            <span class="text-muted medium text-uppercase fw-bold">
+                {{ 'mautic.twofactor.verify.step_two'|trans }}
+            </span>
+
+            <h3 class="fw-bold mb-1">{{ 'mautic.twofactor.verify.title'|trans }}</h3>
+            <p class="text-muted medium mb-3">
+                {{ 'mautic.twofactor.verify.subtitle'|trans }}
+            </p>
+            <p class="text-muted medium mb-4 fw-bold ">
+                <strong>{{ 'mautic.twofactor.verify.instructions'|trans }}</strong>
+            </p>
+
+            <div class="alert alert-info medium align-items-start  mb-4 d-flex gap-2 ">
+                <div>
+                    {{ 'mautic.twofactor.verify.totp_info'|trans }}
+                </div>
+            </div>
+            <form method="post" action="{{ path('mautic_twofactor_verify') }}" class="text-start">
+                <div class="mb-4">
+                    <label for="twofactor_code" class="form-label small fw-semibold">
+                        <b>{{ 'mautic.twofactor.verify.enter_code'|trans }}</b>
+                    </label>
+                    <input
+                        type="tel"
+                        id="twofactor_code"
+                        name="twofactor_code"
+                        class="form-control form-control-lg"
+                        pattern="\d{6}"
+                        maxlength="6"
+                        autocomplete="one-time-code"
+                        required
+                        autofocus
+                        placeholder="000000"
+                    />
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                {% include '@MauticCore/Helper/button.html.twig' with {
+                    buttons: [
+                        {
+                            label: 'mautic.twofactor.verify.verify_button',
+                            variant: 'primary',
+                            size: 'lg',
+                            wide: true
+                        }
+                    ]
+                } %}
+
+            </form>
+            
+            <p class="text-muted medium mt-4">
+                {{ 'mautic.twofactor.verify.help_google'|trans }}
+            </p>
+            <div class="d-grid mb-2 text-center sm">
+                <a
+                    href="{{ path('mautic_twofactor_setup') }}"
+                >
+                    {{ 'mautic.twofactor.verify.reset_device'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
